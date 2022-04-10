@@ -17,6 +17,7 @@ defmodule School.Courses do
   def get_course(id) do
     Course
     |> Repo.get(id)
+    |> Repo.preload(:students)
   end
 
   @doc """

@@ -1,5 +1,6 @@
 defmodule SchoolWeb.TeacherView do
   use SchoolWeb, :view
+
   @doc """
   renders the list of teachers
   """
@@ -21,8 +22,7 @@ defmodule SchoolWeb.TeacherView do
       id: teacher.id,
       first_name: teacher.first_name,
       last_name: teacher.last_name,
-      email: teacher.email,
-      courses: teacher.courses
+      email: teacher.email
     }
   end
 
@@ -46,8 +46,7 @@ defmodule SchoolWeb.TeacherView do
       id: teacher.id,
       first_name: teacher.first_name,
       last_name: teacher.last_name,
-      email: teacher.email,
-      courses: teacher.courses
+      email: teacher.email
     }
   end
 
@@ -75,6 +74,6 @@ defmodule SchoolWeb.TeacherView do
   Renders the students that take the courses associated with the specified teacher.
   """
   def render("show_students.json", %{students: students}) do
-   render_many(students, SchoolWeb.StudentView, "show.json")
+    render_many(students, SchoolWeb.StudentView, "show.json")
   end
 end
