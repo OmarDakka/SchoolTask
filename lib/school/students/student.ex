@@ -4,6 +4,10 @@ defmodule School.Students.Student do
 
   alias School.Courses.Course
 
+  @doc """
+  Schema for students table with the appropriate fields, and it has a many to many relationship with the courses table. joining through
+  the `students_courses` table
+  """
   @derive {Jason.Encoder, only: [:first_name, :last_name, :email, :date_of_birth]}
   schema "students" do
     field :first_name, :string
@@ -19,6 +23,9 @@ defmodule School.Students.Student do
     timestamps()
   end
 
+  @doc """
+  The changeset validators that make sure that the data fit the schema needs
+  """
   def changeset(student, attrs) do
     student
     |> cast(attrs, [:first_name, :last_name, :email, :date_of_birth])
@@ -26,6 +33,9 @@ defmodule School.Students.Student do
     |> validate_email()
   end
 
+  @doc """
+  Email validation in order to enter a valid email using regular expression
+  """
   def validate_email(changeset) do
     changeset
     |> validate_required([:email])

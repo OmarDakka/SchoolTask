@@ -55,6 +55,7 @@ defmodule SchoolWeb.CourseController do
   """
   def get_course_students(conn, %{"id" => id}) do
     course = Courses.get_course(id)
+
     render(conn, "course_students.json", course: course)
   end
 
