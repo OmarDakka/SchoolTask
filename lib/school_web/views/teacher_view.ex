@@ -64,6 +64,9 @@ defmodule SchoolWeb.TeacherView do
     render_many(students, SchoolWeb.StudentView, "show.json")
   end
 
+  @doc """
+  Render the newly created teacher and newly created course
+  """
   def render("create_teacher_and_course.json", %{result: result}) do
     %{
       Teacher: render_one(result.teacher, SchoolWeb.TeacherView, "show.json"),
