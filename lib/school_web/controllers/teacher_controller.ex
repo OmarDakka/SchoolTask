@@ -26,7 +26,10 @@ defmodule SchoolWeb.TeacherController do
   def create(conn, %{"teachers" => teacher_params}) do
     case Teachers.create_teacher(teacher_params) do
       {:ok, teacher} ->
-        render(conn, "create.json", teacher: teacher)
+        conn
+        |> put_status(:created)
+        |> put_resp_header("location", Routes.teacher_path(conn, :show, teacher))
+        |> render("create.json", teacher: teacher)
 
       {:error, error} ->
         conn

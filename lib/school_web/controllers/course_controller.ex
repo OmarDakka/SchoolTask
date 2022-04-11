@@ -20,7 +20,10 @@ defmodule SchoolWeb.CourseController do
   def create(conn, %{"course" => course_params}) do
     case Courses.create_course(course_params) do
       {:ok, course} ->
-        render(conn, "create.json", course: course)
+        conn
+        |> put_status(:created)
+        |> put_resp_header("location", Routes.course_path(conn, :show, course))
+        |> render("create.json", course: course)
 
       {:error, error} ->
         conn

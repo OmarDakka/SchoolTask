@@ -2,6 +2,7 @@ defmodule SchoolWeb.UserController do
   use SchoolWeb, :controller
 
   alias School.Users
+  alias SchoolWeb.Controllers.ControllerHelper
 
   def register(conn, %{"users" => user_params}) do
     case Users.create_user(user_params) do
@@ -9,17 +10,9 @@ defmodule SchoolWeb.UserController do
         render(conn, "register.json", user: user)
 
       {:error, error} ->
-        json(
-          conn,
-          Enum.map(error.errors, fn message ->
-            {
-              field,
-              {text, validation}
-            } = message
-
-            "field #{field}: #{text} #{inspect(validation)}"
-          end)
-        )
+        conn
+        |> put_status(422)
+        |> json(ControllerHelper.errors_from_changset(error))
     end
   end
 end

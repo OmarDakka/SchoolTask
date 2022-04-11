@@ -2,7 +2,7 @@ defmodule SchoolWeb.TeacherView do
   use SchoolWeb, :view
 
   @doc """
-  renders the list of teachers
+  Renders the list of teachers
   """
   def render("index.json", %{teacher_result: teacher_result}) do
     %{
@@ -18,13 +18,17 @@ defmodule SchoolWeb.TeacherView do
   Renders the newly created teacher
   """
   def render("create.json", %{teacher: teacher}) do
-    render_one(teacher, SchoolWeb.TeacherView, "show.json")
+    %{data: render_one(teacher, SchoolWeb.TeacherView, "show.json")}
   end
 
   @doc """
   Renders one teacher based on id
   """
   def render("show.json", %{teacher: teacher}) do
+    %{data: render_one(teacher, SchoolWeb.TeacherView, "teacher.json")}
+  end
+
+  def render("teacher.json", %{teacher: teacher}) do
     %{
       id: teacher.id,
       first_name: teacher.first_name,
@@ -37,7 +41,7 @@ defmodule SchoolWeb.TeacherView do
   Renders the updated teacher
   """
   def render("update.json", %{teacher: teacher}) do
-    render_one(teacher, SchoolWeb.TeacherView, "show.json")
+    %{data: render_one(teacher, SchoolWeb.TeacherView, "show.json")}
   end
 
   @doc """
@@ -61,7 +65,7 @@ defmodule SchoolWeb.TeacherView do
   Renders the students that take the courses associated with the specified teacher.
   """
   def render("show_students.json", %{students: students}) do
-    render_many(students, SchoolWeb.StudentView, "show.json")
+    %{data: render_many(students, SchoolWeb.StudentView, "show.json")}
   end
 
   @doc """
