@@ -17,7 +17,11 @@ defmodule School.Courses.Course do
     field :description, :string
 
     belongs_to :teacher, Teacher
-    many_to_many :students, Student, join_through: "students_courses", on_replace: :delete, on_delete: :delete_all
+
+    many_to_many :students, Student,
+      join_through: "students_courses",
+      on_replace: :delete,
+      on_delete: :delete_all
 
     timestamps()
   end

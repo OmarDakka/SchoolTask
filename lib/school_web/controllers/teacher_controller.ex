@@ -1,6 +1,7 @@
 defmodule SchoolWeb.TeacherController do
   use SchoolWeb, :controller
 
+  alias School.Repo
   alias School.Teachers
 
   @doc """
@@ -20,8 +21,6 @@ defmodule SchoolWeb.TeacherController do
   in json.
   """
   def create(conn, %{"teachers" => teacher_params}) do
-    IO.inspect(teacher_params)
-
     case Teachers.create_teacher(teacher_params) do
       {:ok, teacher} ->
         render(conn, "create.json", teacher: teacher)
@@ -71,6 +70,27 @@ defmodule SchoolWeb.TeacherController do
   def show_students(conn, %{"id" => id}) do
     students = Teachers.get_students(id)
     render(conn, "show_students.json", students: students)
+  end
+
+  def create_teacher_and_course(conn, params) do
+    case Teachers.create_teacher_and_course(params) do
+      {:ok, {:ok, course}} ->
+        IO.inspect(course)
+        render(conn, "create_teacher_and_course.json", result: course |> Repo.preload(:teacher))
+
+      {:error, error} ->
+        json(
+          conn,
+          Enum.map(error.errors, fn message ->
+            {
+              field,
+              {text, validation}
+            } = message
+
+            "field #{field}: #{text} #{inspect(validation)}"
+          end)
+        )
+    end
   end
 
   @doc """

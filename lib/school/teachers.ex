@@ -3,6 +3,8 @@ defmodule School.Teachers do
   alias School.Repo
 
   alias School.Teachers.Teacher
+  alias School.Teachers
+  alias School.Courses
   alias School.Courses.Course
 
   @doc """
@@ -43,7 +45,6 @@ defmodule School.Teachers do
       Map.put(acc, student.id, student)
     end)
     |> Map.values()
-
   end
 
   @doc """
@@ -54,6 +55,14 @@ defmodule School.Teachers do
     %Teacher{}
     |> Teacher.changeset(attrs)
     |> Repo.insert()
+  end
+
+  def create_teacher_and_course(attrs) do
+    Repo.transaction(fn ->
+      {:ok, teacher} = Teachers.create_teacher(attrs)
+      attrs = Map.put(attrs, "teacher_id", teacher.id)
+      Courses.create_course(attrs)
+    end)
   end
 
   @doc """

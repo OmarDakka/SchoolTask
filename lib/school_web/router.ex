@@ -49,6 +49,7 @@ defmodule SchoolWeb.Router do
     delete "/teachers/:id", TeacherController, :delete
     get "/teachers/:id/courses", TeacherController, :show_multiple
     get "/teachers/:id/students", TeacherController, :show_students
+    post "/teachers/course", TeacherController, :create_teacher_and_course
 
     get "/students", StudentController, :index
     post "/students", StudentController, :create
