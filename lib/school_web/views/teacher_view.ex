@@ -18,12 +18,7 @@ defmodule SchoolWeb.TeacherView do
   Renders the newly created teacher
   """
   def render("create.json", %{teacher: teacher}) do
-    %{
-      id: teacher.id,
-      first_name: teacher.first_name,
-      last_name: teacher.last_name,
-      email: teacher.email
-    }
+    render_one(teacher, SchoolWeb.TeacherView, "show.json")
   end
 
   @doc """
@@ -42,12 +37,7 @@ defmodule SchoolWeb.TeacherView do
   Renders the updated teacher
   """
   def render("update.json", %{teacher: teacher}) do
-    %{
-      id: teacher.id,
-      first_name: teacher.first_name,
-      last_name: teacher.last_name,
-      email: teacher.email
-    }
+    render_one(teacher, SchoolWeb.TeacherView, "show.json")
   end
 
   @doc """
@@ -62,11 +52,8 @@ defmodule SchoolWeb.TeacherView do
   """
   def render("show_courses.json", %{teacher: teacher}) do
     %{
-      id: teacher.id,
-      first_name: teacher.first_name,
-      last_name: teacher.last_name,
-      email: teacher.email,
-      courses: teacher.courses
+      Teacher: render_one(teacher, SchoolWeb.TeacherView, "show.json"),
+      Courses: render_many(teacher.courses, SchoolWeb.CourseView, "show.json")
     }
   end
 
