@@ -3,6 +3,7 @@ defmodule School.Teachers.Teacher do
   import Ecto.Changeset
 
   alias School.Courses.Course
+
   @doc """
   The schema for the `teachers` table.
   """

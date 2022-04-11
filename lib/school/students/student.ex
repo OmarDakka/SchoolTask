@@ -11,7 +11,10 @@ defmodule School.Students.Student do
     field :email, :string
     field :date_of_birth, :date
 
-    many_to_many :courses, Course, join_through: "students_courses", on_replace: :delete, on_delete: :delete_all
+    many_to_many :courses, Course,
+      join_through: "students_courses",
+      on_replace: :delete,
+      on_delete: :delete_all
 
     timestamps()
   end
@@ -20,7 +23,6 @@ defmodule School.Students.Student do
     student
     |> cast(attrs, [:first_name, :last_name, :email, :date_of_birth])
     |> validate_required([:first_name, :date_of_birth])
-
     |> validate_email()
   end
 
