@@ -1,5 +1,6 @@
 defmodule SchoolWeb.CourseView do
   use SchoolWeb, :view
+
   @doc """
   Renders a list of courses.
   """
@@ -17,14 +18,7 @@ defmodule SchoolWeb.CourseView do
   Renders the newly created course.
   """
   def render("create.json", %{course: course}) do
-    %{
-      id: course.id,
-      course_name: course.course_name,
-      code: course.code,
-      teacher_id: course.teacher_id,
-      description: course.description,
-      semester: course.semester
-    }
+    render_one(course, SchoolWeb.CourseView, "show.json")
   end
 
   @doc """
@@ -45,29 +39,14 @@ defmodule SchoolWeb.CourseView do
   Renders the students that take the course.
   """
   def render("course_students.json", %{course: course}) do
-    %{
-      id: course.id,
-      course_name: course.course_name,
-      code: course.code,
-      teacher_id: course.teacher_id,
-      semester: course.semester,
-      description: course.description,
-      students: course.students
-    }
+    render_many(course.students, SchoolWeb.StudentView, "show.json")
   end
 
   @doc """
   Renders the updated course.
   """
   def render("update.json", %{course: course}) do
-    %{
-      id: course.id,
-      course_name: course.course_name,
-      code: course.code,
-      teacher_id: course.teacher_id,
-      description: course.description,
-      semester: course.semester
-    }
+    render_one(course, SchoolWeb.CourseView, "show.json")
   end
 
   @doc """

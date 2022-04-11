@@ -1,7 +1,6 @@
 defmodule SchoolWeb.CourseController do
   use SchoolWeb, :controller
 
-  alias School.Repo
   alias School.Courses
 
   @doc """
@@ -55,7 +54,7 @@ defmodule SchoolWeb.CourseController do
   Takes a course id and returns the course with the students associated with it.
   """
   def get_course_students(conn, %{"id" => id}) do
-    course = Courses.get_course(id) |> Repo.preload(:students)
+    course = Courses.get_course(id)
     render(conn, "course_students.json", course: course)
   end
 
