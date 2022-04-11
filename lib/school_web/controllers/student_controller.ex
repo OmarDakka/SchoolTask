@@ -6,6 +6,7 @@ defmodule SchoolWeb.StudentController do
   alias School.Repo
   alias School.Students
   alias School.Courses
+  alias SchoolWeb.Controllers.ControllerHelper
 
   @doc """
   Listing all student rows
@@ -27,17 +28,9 @@ defmodule SchoolWeb.StudentController do
         render(conn, "create.json", student: student)
 
       {:error, error} ->
-        json(
-          conn,
-          Enum.map(error.errors, fn message ->
-            {
-              field,
-              {text, validation}
-            } = message
-
-            "field #{field}: #{text} #{inspect(validation)}"
-          end)
-        )
+        conn
+        |> put_status(422)
+        |> json(ControllerHelper.errors_from_changset(error))
     end
   end
 
@@ -86,17 +79,9 @@ defmodule SchoolWeb.StudentController do
         render(conn, "update.json", student: student)
 
       {:error, error} ->
-        json(
-          conn,
-          Enum.map(error.errors, fn message ->
-            {
-              field,
-              {text, validation}
-            } = message
-
-            "field #{field}: #{text} #{inspect(validation)}"
-          end)
-        )
+        conn
+        |> put_status(422)
+        |> json(ControllerHelper.errors_from_changset(error))
     end
   end
 

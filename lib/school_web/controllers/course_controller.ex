@@ -2,6 +2,7 @@ defmodule SchoolWeb.CourseController do
   use SchoolWeb, :controller
 
   alias School.Courses
+  alias SchoolWeb.Controllers.ControllerHelper
 
   @doc """
   Takes in a list of courses and paginates them showing 4 entries at a time, and returns them as json.
@@ -22,17 +23,9 @@ defmodule SchoolWeb.CourseController do
         render(conn, "create.json", course: course)
 
       {:error, error} ->
-        json(
-          conn,
-          Enum.map(error.errors, fn message ->
-            {
-              field,
-              {text, validation}
-            } = message
-
-            "field #{field}: #{text} #{inspect(validation)}"
-          end)
-        )
+        conn
+        |> put_status(422)
+        |> json(ControllerHelper.errors_from_changset(error))
     end
   end
 
@@ -71,17 +64,9 @@ defmodule SchoolWeb.CourseController do
         render(conn, "update.json", course: course)
 
       {:error, error} ->
-        json(
-          conn,
-          Enum.map(error.errors, fn message ->
-            {
-              field,
-              {text, validation}
-            } = message
-
-            "field #{field}: #{text} #{inspect(validation)}"
-          end)
-        )
+        conn
+        |> put_status(422)
+        |> json(ControllerHelper.errors_from_changset(error))
     end
   end
 

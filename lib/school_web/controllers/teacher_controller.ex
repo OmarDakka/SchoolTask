@@ -3,6 +3,7 @@ defmodule SchoolWeb.TeacherController do
 
   alias School.Repo
   alias School.Teachers
+  alias SchoolWeb.Controllers.ControllerHelper
 
   @doc """
   Function that takes in a list of teachers then renders them as json output, they are
@@ -28,17 +29,9 @@ defmodule SchoolWeb.TeacherController do
         render(conn, "create.json", teacher: teacher)
 
       {:error, error} ->
-        json(
-          conn,
-          Enum.map(error.errors, fn message ->
-            {
-              field,
-              {text, validation}
-            } = message
-
-            "field #{field}: #{text} #{inspect(validation)}"
-          end)
-        )
+        conn
+        |> put_status(422)
+        |> json(ControllerHelper.errors_from_changset(error))
     end
   end
 
@@ -88,17 +81,9 @@ defmodule SchoolWeb.TeacherController do
         render(conn, "create_teacher_and_course.json", result: course |> Repo.preload(:teacher))
 
       {:error, error} ->
-        json(
-          conn,
-          Enum.map(error.errors, fn message ->
-            {
-              field,
-              {text, validation}
-            } = message
-
-            "field #{field}: #{text} #{inspect(validation)}"
-          end)
-        )
+        conn
+        |> put_status(422)
+        |> json(ControllerHelper.errors_from_changset(error))
     end
   end
 
@@ -115,17 +100,9 @@ defmodule SchoolWeb.TeacherController do
         render(conn, "update.json", teacher: teacher)
 
       {:error, error} ->
-        json(
-          conn,
-          Enum.map(error.errors, fn message ->
-            {
-              field,
-              {text, validation}
-            } = message
-
-            "field #{field}: #{text} #{inspect(validation)}"
-          end)
-        )
+        conn
+        |> put_status(422)
+        |> json(ControllerHelper.errors_from_changset(error))
     end
   end
 
