@@ -12,13 +12,7 @@ defmodule SchoolWeb.StudentView do
   end
 
   def render("create.json", %{student: student}) do
-    %{
-      id: student.id,
-      first_name: student.first_name,
-      last_name: student.last_name,
-      email: student.email,
-      date_of_birth: student.date_of_birth
-    }
+    render_one(student, SchoolWeb.StudentView, "show.json")
   end
 
   def render("show.json", %{student: student}) do
@@ -32,20 +26,17 @@ defmodule SchoolWeb.StudentView do
   end
 
   def render("update.json", %{student: student}) do
-    %{
-      id: student.id,
-      first_name: student.first_name,
-      last_name: student.last_name,
-      email: student.email,
-      date_of_birth: student.date_of_birth
-    }
+    render_one(student, SchoolWeb.StudentView, "show.json")
   end
 
   def render("delete.json", _) do
     %{status: "Student Deleted"}
   end
 
-  def render("sign_up.json", %{course: course}) do
-    %{status: "ok", course: course}
+  def render("sign_up.json", %{course: course, student: student}) do
+    %{
+      Student: render_one(student, SchoolWeb.StudentView, "show.json"),
+      Course: render_one(course, SchoolWeb.CourseView, "show.json")
+    }
   end
 end

@@ -46,7 +46,7 @@ defmodule SchoolWeb.StudentController do
 
     Repo.update(student_course_changeset)
 
-    render(conn, "sign_up.json", course: course)
+    render(conn, "sign_up.json", course: course, student: student)
   end
 
   def show(conn, %{"id" => id}) do
