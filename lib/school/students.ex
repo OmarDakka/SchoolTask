@@ -8,8 +8,19 @@ defmodule School.Students do
   Query for showing all the student records on the table and paginate them accordingly
   """
   def list_students(params) do
-    Student
-    |> Repo.paginate(params)
+    query = from(s in Student, order_by: [asc: s.inserted_at, asc: s.id])
+
+    %{entries: entries, metadata: metadata} =
+      Repo.paginate(
+        query,
+        after: params["after"],
+        before: params["before"],
+        cursor_fields: [:inserted_at, :id],
+        include_total_count: true,
+        limit: 4
+      )
+
+    %{entries: entries, metadata: metadata}
   end
 
   @doc """

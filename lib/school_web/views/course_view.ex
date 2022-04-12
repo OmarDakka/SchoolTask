@@ -5,12 +5,15 @@ defmodule SchoolWeb.CourseView do
   Renders a list of courses.
   """
   def render("index.json", %{course_result: course_result}) do
+    %{entries: course, metadata: metadata} = course_result
+
     %{
-      courses: course_result.entries,
-      page_number: course_result.page_number,
-      page_size: course_result.page_size,
-      total_pages: course_result.total_pages,
-      total_entries: course_result.total_entries
+      entries: render_many(course, SchoolWeb.CourseView, "course.json"),
+      metadata: %{
+        after: metadata.after,
+        before: metadata.before,
+        total_count: metadata.total_count
+      }
     }
   end
 

@@ -48,7 +48,7 @@ defmodule School.MixProject do
       {:gettext, "~> 0.18"},
       {:jason, "~> 1.2"},
       {:plug_cowboy, "~> 2.5"},
-      {:scrivener_ecto, "~> 2.7"},
+      {:paginator, "~> 1.1"},
       {:guardian, "~> 2.0"},
       {:argon2_elixir, "~> 2.0"}
     ]

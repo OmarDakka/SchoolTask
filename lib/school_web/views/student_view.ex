@@ -5,12 +5,15 @@ defmodule SchoolWeb.StudentView do
   Render a paginated list of students
   """
   def render("index.json", %{students_results: students_results}) do
+    %{entries: student, metadata: metadata} = students_results
+
     %{
-      students: students_results.entries,
-      page_number: students_results.page_number,
-      page_size: students_results.page_size,
-      total_pages: students_results.total_pages,
-      total_entries: students_results.total_entries
+      entries: render_many(student, SchoolWeb.StudentView, "student.json"),
+      metadata: %{
+        after: metadata.after,
+        before: metadata.before,
+        total_count: metadata.total_count
+      }
     }
   end
 
@@ -18,13 +21,17 @@ defmodule SchoolWeb.StudentView do
   Render the created student
   """
   def render("create.json", %{student: student}) do
-    render_one(student, SchoolWeb.StudentView, "show.json")
+    render_one(student, SchoolWeb.StudentView, "student.json")
   end
 
   @doc """
   Render the selected student
   """
   def render("show.json", %{student: student}) do
+    render_one(student, SchoolWeb.StudentView, "student.json")
+  end
+
+  def render("student.json", %{student: student}) do
     %{
       id: student.id,
       first_name: student.first_name,
@@ -38,7 +45,7 @@ defmodule SchoolWeb.StudentView do
   Render the updated student
   """
   def render("update.json", %{student: student}) do
-    render_one(student, SchoolWeb.StudentView, "show.json")
+    render_one(student, SchoolWeb.StudentView, "student.json")
   end
 
   @doc """

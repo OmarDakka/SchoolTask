@@ -10,10 +10,21 @@ defmodule School.Teachers do
   @doc """
   Query to get a list of all the teachers in database.
   """
-  @spec list_teachers(keyword | map) :: Scrivener.Page.t()
   def list_teachers(params) do
-    Teacher
-    |> Repo.paginate(params)
+    query = from(t in Teacher, order_by: [asc: t.inserted_at, asc: t.id])
+
+    ## return the first 4 teachers
+    %{entries: entries, metadata: metadata} =
+      Repo.paginate(
+        query,
+        after: params["after"],
+        before: params["before"],
+        cursor_fields: [:inserted_at, :id],
+        include_total_count: true,
+        limit: 4
+      )
+
+    %{entries: entries, metadata: metadata}
   end
 
   @doc """

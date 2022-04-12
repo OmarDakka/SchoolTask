@@ -5,12 +5,15 @@ defmodule SchoolWeb.TeacherView do
   Renders the list of teachers
   """
   def render("index.json", %{teacher_result: teacher_result}) do
+    %{entries: teacher, metadata: metadata} = teacher_result
+
     %{
-      teachers: teacher_result.entries,
-      page_number: teacher_result.page_number,
-      page_size: teacher_result.page_size,
-      total_pages: teacher_result.total_pages,
-      total_entries: teacher_result.total_entries
+      entries: render_many(teacher, SchoolWeb.TeacherView, "show.json"),
+      metadata: %{
+        before: metadata.before,
+        after: metadata.after,
+        total_count: metadata.total_count
+      }
     }
   end
 

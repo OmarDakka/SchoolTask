@@ -7,8 +7,19 @@ defmodule School.Courses do
   Query that returns a list of all the courses.
   """
   def list_courses(params) do
-    Course
-    |> Repo.paginate(params)
+    query = from(c in Course, order_by: [asc: c.inserted_at, asc: c.id])
+
+    %{entries: entries, metadata: metadata} =
+      Repo.paginate(
+        query,
+        after: params["after"],
+        before: params["before"],
+        cursor_fields: [:inserted_at, :id],
+        include_total_count: true,
+        limit: 4
+      )
+
+    %{entries: entries, metadata: metadata}
   end
 
   @doc """

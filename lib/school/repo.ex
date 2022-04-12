@@ -3,5 +3,5 @@ defmodule School.Repo do
     otp_app: :school,
     adapter: Ecto.Adapters.MyXQL
 
-  use Scrivener, page_size: 4
+  use Paginator
 end

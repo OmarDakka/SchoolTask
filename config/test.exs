@@ -9,7 +9,7 @@ config :school, School.Repo,
   username: "root",
   password: "2BzM7gH0",
   hostname: "localhost",
-  database: "school_test#{System.get_env("MIX_TEST_PARTITION")}",
+  database: "school_test",
   pool: Ecto.Adapters.SQL.Sandbox,
   pool_size: 10
 
