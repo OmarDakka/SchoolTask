@@ -7,6 +7,7 @@ defmodule SchoolWeb.CourseController do
   @doc """
   Takes in a list of courses and paginates them showing 4 entries at a time, and returns them as json.
   """
+
   def index(conn, params) do
     course_result = Courses.list_courses(params)
 
