@@ -42,6 +42,7 @@ defmodule SchoolWeb.CourseController do
 
             conn
             |> put_status(422)
+            |> put_cookie("whatever")
             |> json(ControllerHelper.errors_from_changset(errors))
         end
     end
