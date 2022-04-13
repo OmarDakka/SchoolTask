@@ -1,10 +1,24 @@
 defmodule School.Courses.Course do
   use Ecto.Schema
   import Ecto.Changeset
-  import PolymorphicEmbed, only: [cast_polymorphic_embed: 3]
 
   alias School.Teachers.Teacher
   alias School.Students.Student
+  alias School.Courses.Semester.{First, Second, Third, Fourth}
+
+  import PolymorphicEmbed, only: [cast_polymorphic_embed: 3]
+
+  @type t :: %__MODULE__{
+          course_name: String.t(),
+          code: String.t(),
+          semester: :first | :second | :third | :fourth,
+          description: String.t(),
+          metadata:
+            First.t()
+            | Second.t()
+            | Third.t()
+            | Fourth.t()
+        }
 
   @doc """
   Schema for the courses, with the fields specified, and a many to one relationship with the teachers and many to many
@@ -14,17 +28,18 @@ defmodule School.Courses.Course do
   schema "courses" do
     field :course_name, :string
     field :code, :string
-
-    field :semester, PolymorphicEmbed,
-      types: [
-        first: School.Courses.Semester.First,
-        second: School.Courses.Semester.Second,
-        third: School.Courses.Semester.Third,
-        fourth: School.Courses.Semester.Fourth
-      ],
-      on_replace: :update
-
+    field :semester, Ecto.Enum, values: [:first, :second, :third, :fourth], null: false
     field :description, :string
+
+    field :metadata, PolymorphicEmbed,
+      types: [
+        first: First,
+        second: Second,
+        third: Third,
+        fourth: Fourth
+      ],
+      on_type_not_found: :raise,
+      on_replace: :update
 
     belongs_to :teacher, Teacher
 
@@ -40,11 +55,20 @@ defmodule School.Courses.Course do
   The changeset that the attributes go through to validate but they are handled in the repo.
   """
   def changeset(course, attrs) do
+    attrs = add_type_to_metadata(attrs)
+
     course
-    |> cast(attrs, [:course_name, :code, :description, :teacher_id])
-    |> cast_polymorphic_embed(:semester, required: false)
+    |> cast(attrs, [:course_name, :code, :semester, :description, :teacher_id])
+    |> cast_polymorphic_embed(:metadata, required: true)
     |> foreign_key_constraint(:teacher_id)
     |> validate_required([:course_name, :code, :teacher_id])
     |> IO.inspect()
+  end
+
+  def add_type_to_metadata(%{"semester" => semester, "metadata" => metadata} = attrs)
+      when is_map(metadata) do
+    metadata = Map.merge(metadata, %{"__type__" => semester})
+
+    Map.put(attrs, "metadata", metadata)
   end
 end
