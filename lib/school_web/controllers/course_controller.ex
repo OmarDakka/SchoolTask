@@ -10,8 +10,9 @@ defmodule SchoolWeb.CourseController do
 
   def index(conn, params) do
     course_result = Courses.list_courses(params)
-
-    render(conn, "index.json", course_result: course_result)
+    %{entries: course, metadata: metadata} = course_result
+    course = Enum.map(course, fn course -> update_course_semester(course) end)
+    render(conn, "index.json", data: %{entries: course, metadata: metadata})
   end
 
   @doc """
@@ -42,7 +43,6 @@ defmodule SchoolWeb.CourseController do
 
             conn
             |> put_status(422)
-            |> put_cookie("whatever")
             |> json(ControllerHelper.errors_from_changset(errors))
         end
     end
