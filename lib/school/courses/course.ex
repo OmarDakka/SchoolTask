@@ -1,6 +1,7 @@
 defmodule School.Courses.Course do
   use Ecto.Schema
   import Ecto.Changeset
+  import PolymorphicEmbed, only: [cast_polymorphic_embed: 3]
 
   alias School.Teachers.Teacher
   alias School.Students.Student
@@ -13,7 +14,16 @@ defmodule School.Courses.Course do
   schema "courses" do
     field :course_name, :string
     field :code, :string
-    field :semester, :string
+
+    field :semester, PolymorphicEmbed,
+      types: [
+        first: School.Courses.Semester.First,
+        second: School.Courses.Semester.Second,
+        third: School.Courses.Semester.Third,
+        fourth: School.Courses.Semester.Fourth
+      ],
+      on_replace: :update
+
     field :description, :string
 
     belongs_to :teacher, Teacher
@@ -31,8 +41,10 @@ defmodule School.Courses.Course do
   """
   def changeset(course, attrs) do
     course
-    |> cast(attrs, [:course_name, :code, :semester, :description, :teacher_id])
+    |> cast(attrs, [:course_name, :code, :description, :teacher_id])
+    |> cast_polymorphic_embed(:semester, required: false)
     |> foreign_key_constraint(:teacher_id)
-    |> validate_required([:course_name, :code, :semester, :teacher_id])
+    |> validate_required([:course_name, :code, :teacher_id])
+    |> IO.inspect()
   end
 end

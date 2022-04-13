@@ -5,7 +5,7 @@ defmodule School.Repo.Migrations.CreateCoursesTable do
     create table(:courses) do
       add :course_name, :string, null: false
       add :code, :string, null: false
-      add :semester, :string, null: false
+      add :semester, :map, null: false
       add :description, :text
 
       timestamps()

@@ -20,15 +20,29 @@ defmodule SchoolWeb.CourseController do
   def create(conn, %{"course" => course_params}) do
     case Courses.create_course(course_params) do
       {:ok, course} ->
+        course = update_course_semester(course)
+
         conn
         |> put_status(:created)
         |> put_resp_header("location", Routes.course_path(conn, :show, course))
         |> render("create.json", course: course)
 
       {:error, error} ->
-        conn
-        |> put_status(422)
-        |> json(ControllerHelper.errors_from_changset(error))
+        case Map.has_key?(error.changes.semester, :errors) do
+          true ->
+            errors = error.changes.semester.errors
+
+            conn
+            |> put_status(422)
+            |> json(ControllerHelper.errors_from_changset(errors))
+
+          false ->
+            errors = error.errors
+
+            conn
+            |> put_status(422)
+            |> json(ControllerHelper.errors_from_changset(errors))
+        end
     end
   end
 
@@ -42,6 +56,7 @@ defmodule SchoolWeb.CourseController do
         json(conn, "No course with that id")
 
       course ->
+        course = update_course_semester(course)
         render(conn, "show.json", course: course)
     end
   end
@@ -64,12 +79,25 @@ defmodule SchoolWeb.CourseController do
 
     case Courses.update_course(course, course_params) do
       {:ok, course} ->
+        course = update_course_semester(course)
         render(conn, "update.json", course: course)
 
       {:error, error} ->
-        conn
-        |> put_status(422)
-        |> json(ControllerHelper.errors_from_changset(error))
+        case Map.has_key?(error.changes.semester, :errors) do
+          true ->
+            errors = error.changes.semester.errors
+
+            conn
+            |> put_status(422)
+            |> json(ControllerHelper.errors_from_changset(errors))
+
+          false ->
+            errors = error.errors
+
+            conn
+            |> put_status(422)
+            |> json(ControllerHelper.errors_from_changset(errors))
+        end
     end
   end
 
@@ -80,5 +108,17 @@ defmodule SchoolWeb.CourseController do
     course = Courses.get_course(id)
     {:ok, _course} = Courses.delete_course(course)
     render(conn, "delete.json")
+  end
+
+  defp update_course_semester(course) do
+    semester = Map.from_struct(course.semester)
+
+    name =
+      course.semester.__struct__
+      |> Module.split()
+      |> List.last()
+
+    semester = Map.put_new(semester, :name, name)
+    Map.replace(course, :semester, semester)
   end
 end
