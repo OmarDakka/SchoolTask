@@ -39,7 +39,7 @@ defmodule School.Courses.Course do
         third: Third,
         fourth: Fourth
       ],
-      on_type_not_found: :raise,
+      on_type_not_found: :changeset_error,
       on_replace: :update
 
     belongs_to :teacher, Teacher
@@ -56,13 +56,17 @@ defmodule School.Courses.Course do
   The changeset that the attributes go through to validate but they are handled in the repo.
   """
   def changeset(course, attrs) do
-    attrs = add_type_to_metadata(attrs)
+    attrs =
+      case attrs["semester"] do
+        nil -> attrs
+        _ -> add_type_to_metadata(attrs)
+      end
 
     course
     |> cast(attrs, [:course_name, :code, :semester, :description, :teacher_id])
+    |> validate_required([:course_name, :code, :teacher_id, :semester])
     |> cast_polymorphic_embed(:metadata, required: true)
     |> foreign_key_constraint(:teacher_id)
-    |> validate_required([:course_name, :code, :teacher_id])
     |> IO.inspect()
   end
 

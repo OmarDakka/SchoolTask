@@ -28,9 +28,17 @@ defmodule SchoolWeb.CourseController do
         |> render("create.json", course: course)
 
       {:error, errors} ->
-        conn
-        |> put_status(422)
-        |> json(ControllerHelper.errors_from_changset(errors))
+        with true <- Map.has_key?(errors.changes, :metadata),
+             true <- Map.has_key?(errors.changes.metadata, :errors) do
+          conn
+          |> put_status(422)
+          |> json(ControllerHelper.errors_from_changset(errors.changes.metadata.errors))
+        else
+          false ->
+            conn
+            |> put_status(422)
+            |> json(ControllerHelper.errors_from_changset(errors.errors))
+        end
     end
   end
 
@@ -68,12 +76,18 @@ defmodule SchoolWeb.CourseController do
       {:ok, course} ->
         render(conn, "update.json", course: course)
 
-      {:error, error} ->
-        errors = error.changes.semester.errors
-
-        conn
-        |> put_status(422)
-        |> json(ControllerHelper.errors_from_changset(errors))
+      {:error, errors} ->
+        with true <- Map.has_key?(errors.changes, :metadata),
+             true <- Map.has_key?(errors.changes.metadata, :errors) do
+          conn
+          |> put_status(422)
+          |> json(ControllerHelper.errors_from_changset(errors.changes.metadata.errors))
+        else
+          false ->
+            conn
+            |> put_status(422)
+            |> json(ControllerHelper.errors_from_changset(errors.errors))
+        end
     end
   end
 
