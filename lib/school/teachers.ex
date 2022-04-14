@@ -3,8 +3,6 @@ defmodule School.Teachers do
   alias School.Repo
 
   alias School.Teachers.Teacher
-  alias School.Teachers
-  alias School.Courses
   alias School.Courses.Course
 
   @doc """
@@ -82,11 +80,13 @@ defmodule School.Teachers do
   """
   @spec create_teacher_and_course(any) :: any
   def create_teacher_and_course(attrs) do
-    Repo.transaction(fn ->
-      {:ok, teacher} = Teachers.create_teacher(attrs)
+    Ecto.Multi.new()
+    |> Ecto.Multi.insert(:new_teacher, %Teacher{} |> Teacher.changeset(attrs))
+    |> Ecto.Multi.insert(:new_course, fn %{new_teacher: teacher} ->
       attrs = Map.put(attrs, "teacher_id", teacher.id)
-      Courses.create_course(attrs)
+      %Course{} |> Course.changeset(attrs)
     end)
+    |> Repo.transaction()
   end
 
   @doc """

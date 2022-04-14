@@ -24,7 +24,8 @@ defmodule School.Courses.Course do
   Schema for the courses, with the fields specified, and a many to one relationship with the teachers and many to many
   relationship with the students.
   """
-  @derive {Jason.Encoder, only: [:course_name, :code, :semester, :description, :teacher_id]}
+  @derive {Jason.Encoder,
+           only: [:course_name, :code, :semester, :description, :teacher_id, :metadata]}
   schema "courses" do
     field :course_name, :string
     field :code, :string
@@ -38,7 +39,7 @@ defmodule School.Courses.Course do
         third: Third,
         fourth: Fourth
       ],
-      on_type_not_found: :raise,
+      on_type_not_found: :changeset_error,
       on_replace: :update
 
     belongs_to :teacher, Teacher
@@ -55,13 +56,17 @@ defmodule School.Courses.Course do
   The changeset that the attributes go through to validate but they are handled in the repo.
   """
   def changeset(course, attrs) do
-    attrs = add_type_to_metadata(attrs)
+    attrs =
+      case attrs["semester"] do
+        nil -> attrs
+        _ -> add_type_to_metadata(attrs)
+      end
 
     course
     |> cast(attrs, [:course_name, :code, :semester, :description, :teacher_id])
+    |> validate_required([:course_name, :code, :teacher_id, :semester])
     |> cast_polymorphic_embed(:metadata, required: true)
     |> foreign_key_constraint(:teacher_id)
-    |> validate_required([:course_name, :code, :teacher_id])
     |> IO.inspect()
   end
 

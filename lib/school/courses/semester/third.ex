@@ -4,6 +4,7 @@ defmodule School.Courses.Semester.Third do
 
   @primary_key false
 
+  @derive {Jason.Encoder, only: [:period, :is_honor, :is_research]}
   embedded_schema do
     field :period, :string
     field :is_honor, :boolean

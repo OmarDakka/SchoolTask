@@ -1,7 +1,6 @@
 defmodule SchoolWeb.TeacherController do
   use SchoolWeb, :controller
 
-  alias School.Repo
   alias School.Teachers
   alias SchoolWeb.Controllers.ControllerHelper
 
@@ -79,14 +78,19 @@ defmodule SchoolWeb.TeacherController do
   @spec create_teacher_and_course(Plug.Conn.t(), any) :: Plug.Conn.t()
   def create_teacher_and_course(conn, params) do
     case Teachers.create_teacher_and_course(params) do
-      {:ok, {:ok, course}} ->
+      {:ok, %{new_course: course, new_teacher: teacher}} ->
         IO.inspect(course)
-        render(conn, "create_teacher_and_course.json", result: course |> Repo.preload(:teacher))
+        render(conn, "create_teacher_and_course.json", result: [course, teacher])
 
-      {:error, error} ->
+      {:error, :new_teacher, error, %{}} ->
         conn
         |> put_status(422)
-        |> json(ControllerHelper.errors_from_changset(error))
+        |> json(ControllerHelper.errors_from_changset(error.errors))
+
+      {:error, :new_course, error, %{}} ->
+        conn
+        |> put_status(422)
+        |> json(ControllerHelper.errors_from_changset(error.errors))
     end
   end
 
