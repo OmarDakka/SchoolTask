@@ -1,7 +1,6 @@
 defmodule SchoolWeb.TeacherController do
   use SchoolWeb, :controller
 
-  alias School.Repo
   alias School.Teachers
   alias SchoolWeb.Controllers.ControllerHelper
 

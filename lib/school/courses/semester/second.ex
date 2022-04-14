@@ -4,14 +4,15 @@ defmodule School.Courses.Semester.Second do
 
   @primary_key false
 
+  @derive {Jason.Encoder, only: [:period, :is_optional]}
   embedded_schema do
     field :period, :string
-    field :confirmed, :boolean
+    field :is_optional, :boolean
   end
 
   def changeset(second, params) do
     second
-    |> cast(params, [:period, :confirmed])
-    |> validate_required([:period, :confirmed])
+    |> cast(params, [:period, :is_optional])
+    |> validate_required([:period, :is_optional])
   end
 end

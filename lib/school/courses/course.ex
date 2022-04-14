@@ -24,7 +24,8 @@ defmodule School.Courses.Course do
   Schema for the courses, with the fields specified, and a many to one relationship with the teachers and many to many
   relationship with the students.
   """
-  @derive {Jason.Encoder, only: [:course_name, :code, :semester, :description, :teacher_id]}
+  @derive {Jason.Encoder,
+           only: [:course_name, :code, :semester, :description, :teacher_id, :metadata]}
   schema "courses" do
     field :course_name, :string
     field :code, :string
