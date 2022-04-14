@@ -4,8 +4,8 @@ defmodule SchoolWeb.CourseView do
   @doc """
   Renders a list of courses.
   """
-  def render("index.json", %{course_result: course_result}) do
-    %{entries: course, metadata: metadata} = course_result
+  def render("index.json", %{data: data}) do
+    %{entries: course, metadata: metadata} = data
 
     %{
       entries: render_many(course, SchoolWeb.CourseView, "course.json"),

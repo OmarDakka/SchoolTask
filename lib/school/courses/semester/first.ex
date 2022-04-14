@@ -9,9 +9,9 @@ defmodule School.Courses.Semester.First do
     field :is_optional, :boolean
   end
 
-  def changeset(first, params) do
+  def changeset(first, attrs) do
     first
-    |> cast(params, [:period, :is_optional])
+    |> cast(attrs, [:period, :is_optional])
     |> validate_required([:period, :is_optional])
   end
 end
