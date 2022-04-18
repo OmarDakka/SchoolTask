@@ -27,7 +27,6 @@ defmodule SchoolWeb.TeacherController do
       {:ok, teacher} ->
         conn
         |> put_status(:created)
-        |> put_resp_header("location", Routes.teacher_path(conn, :show, teacher))
         |> render("create.json", teacher: teacher)
 
       {:error, error} ->
