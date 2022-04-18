@@ -44,7 +44,7 @@ defmodule SchoolWeb.Router do
 
     get "/teachers", TeacherController, :index
     post "/teachers", TeacherController, :create
-    get "/teachers/:id", TeacherController, :show
+    # get "/teachers/:id", TeacherController, :show
     put "/teachers/:id", TeacherController, :update
     delete "/teachers/:id", TeacherController, :delete
     get "/teachers/:id/courses", TeacherController, :show_multiple
@@ -53,7 +53,7 @@ defmodule SchoolWeb.Router do
 
     get "/students", StudentController, :index
     post "/students", StudentController, :create
-    get "/students/:id", StudentController, :show
+    # get "/students/:id", StudentController, :show
     put "/students/:id", StudentController, :update
     delete "/students/:id", StudentController, :delete
     get "/students/:student_id/courses/:course_id", StudentController, :sign_up
@@ -64,6 +64,9 @@ defmodule SchoolWeb.Router do
     put "/courses/:id", CourseController, :update
     delete "/courses/:id", CourseController, :delete
     get "/courses/:id/students", CourseController, :get_course_students
+
+    get "/students/:id", ProtocolController, :show_student
+    get "/teahcers/:id", ProtocolController, :show_teacher
   end
 
   # Enables LiveDashboard only for development

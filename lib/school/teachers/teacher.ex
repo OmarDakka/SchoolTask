@@ -4,6 +4,8 @@ defmodule School.Teachers.Teacher do
 
   alias School.Courses.Course
 
+  @fields [:first_name, :last_name, :email, :gender, :address, :date_of_birth]
+  @required_fields [:first_name, :gender, :address, :date_of_birth]
   @doc """
   The schema for the `teachers` table.
   """
@@ -12,6 +14,9 @@ defmodule School.Teachers.Teacher do
     field :first_name, :string
     field :last_name, :string
     field :email, :string
+    field :gender, :string
+    field :address, :string
+    field :date_of_birth, :date
 
     has_many :courses, Course
 
@@ -23,8 +28,8 @@ defmodule School.Teachers.Teacher do
   """
   def changeset(teacher, attrs) do
     teacher
-    |> cast(attrs, [:first_name, :last_name, :email])
-    |> validate_required([:first_name])
+    |> cast(attrs, @fields)
+    |> validate_required(@required_fields)
     |> validate_email()
   end
 
