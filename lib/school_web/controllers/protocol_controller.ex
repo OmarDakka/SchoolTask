@@ -2,6 +2,7 @@ defmodule SchoolWeb.ProtocolController do
   use SchoolWeb, :controller
   alias School.Students
   alias School.Teachers
+  alias School.Person
 
   def show_student(conn, %{"id" => id}) do
     case Students.get_student(id) do
@@ -9,7 +10,8 @@ defmodule SchoolWeb.ProtocolController do
         json(conn, "No student with that id")
 
       student ->
-        render(conn, "show.json", student: student)
+        number_of_courses = Person.show(student)
+        render(conn, "show.json", data: %{person: student, number_of_courses: number_of_courses})
     end
   end
 
@@ -19,7 +21,8 @@ defmodule SchoolWeb.ProtocolController do
         json(conn, "No teacher with that id")
 
       teacher ->
-        render(conn, "show.json", teacher: teacher)
+        number_of_courses = Person.show(teacher)
+        render(conn, "show.json", data: %{person: teacher, number_of_courses: number_of_courses})
     end
   end
 end

@@ -66,7 +66,7 @@ defmodule SchoolWeb.Router do
     get "/courses/:id/students", CourseController, :get_course_students
 
     get "/students/:id", ProtocolController, :show_student
-    get "/teahcers/:id", ProtocolController, :show_teacher
+    get "/teachers/:id", ProtocolController, :show_teacher
   end
 
   # Enables LiveDashboard only for development
