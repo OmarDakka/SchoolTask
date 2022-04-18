@@ -11,7 +11,6 @@ defmodule School.Teachers do
   def list_teachers(params) do
     query = from(t in Teacher, order_by: [asc: t.inserted_at, asc: t.id])
 
-    ## return the first 4 teachers
     %{entries: entries, metadata: metadata} =
       Repo.paginate(
         query,
