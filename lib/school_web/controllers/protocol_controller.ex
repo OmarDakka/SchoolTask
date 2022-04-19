@@ -18,7 +18,7 @@ defmodule SchoolWeb.ProtocolController do
   end
 
   def show_teacher(conn, %{"id" => id}) do
-    case Teachers.get_teacher(id) do
+    case Teachers.get_teacher(id, :courses) do
       nil ->
         conn
         |> put_status(404)

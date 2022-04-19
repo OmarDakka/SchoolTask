@@ -1,6 +1,5 @@
 alias School.Students.Student
 alias School.Teachers.Teacher
-alias School.Repo
 
 defprotocol School.Person do
   def show(person)
@@ -12,7 +11,9 @@ defimpl School.Person, for: Student do
     |> Map.take([:address, :gender, :date_of_birth])
     |> Map.put(
       :number_of_courses,
-      Enum.filter(student.courses, fn course -> course.semester == :first end) |> length()
+      student.courses
+      |> Enum.filter(fn course -> course.semester == :first end)
+      |> length()
     )
   end
 end
@@ -21,6 +22,6 @@ defimpl School.Person, for: Teacher do
   def show(teacher) do
     teacher
     |> Map.take([:address, :gender, :date_of_birth])
-    |> Map.put(:number_of_courses, teacher.courses |> length)
+    |> Map.put(:number_of_courses, length(teacher.courses))
   end
 end
