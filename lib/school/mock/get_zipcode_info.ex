@@ -19,6 +19,21 @@ defmodule School.GetZipcodeInfo do
     end
   end
 
+  @impl GetZipcodeInfoBehavior
+  @spec create_teacher(any, any, any, any, any, any) ::
+          {:error, HTTPoison.Error.t()}
+          | {:ok,
+             %{
+               :__struct__ =>
+                 HTTPoison.AsyncResponse | HTTPoison.MaybeRedirect | HTTPoison.Response,
+               optional(:body) => any,
+               optional(:headers) => list,
+               optional(:id) => reference,
+               optional(:redirect_url) => any,
+               optional(:request) => HTTPoison.Request.t(),
+               optional(:request_url) => any,
+               optional(:status_code) => integer
+             }}
   def create_teacher(first_name, last_name, email, gender, address, date_of_birth) do
     url = "http://localhost:4000/api/teachers"
 

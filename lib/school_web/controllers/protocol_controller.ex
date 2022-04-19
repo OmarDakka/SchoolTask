@@ -7,22 +7,26 @@ defmodule SchoolWeb.ProtocolController do
   def show_student(conn, %{"id" => id}) do
     case Students.get_student(id) do
       nil ->
-        json(conn, "No student with that id")
+        conn
+        |> put_status(404)
+        |> json("resource not found")
 
       student ->
-        number_of_courses = Person.show(student)
-        render(conn, "show.json", data: %{person: student, number_of_courses: number_of_courses})
+        person = Person.show(student)
+        render(conn, "show.json", person: person)
     end
   end
 
   def show_teacher(conn, %{"id" => id}) do
     case Teachers.get_teacher(id) do
       nil ->
-        json(conn, "No teacher with that id")
+        conn
+        |> put_status(404)
+        |> json("resource not found")
 
       teacher ->
-        number_of_courses = Person.show(teacher)
-        render(conn, "show.json", data: %{person: teacher, number_of_courses: number_of_courses})
+        person = Person.show(teacher)
+        render(conn, "show.json", person: person)
     end
   end
 end

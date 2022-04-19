@@ -31,6 +31,7 @@ defmodule School.Teachers do
   def get_teacher(id) do
     Teacher
     |> Repo.get(id)
+    |> Repo.preload(:courses)
   end
 
   @doc """

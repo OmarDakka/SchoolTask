@@ -27,7 +27,7 @@ defmodule BoundTest do
     assert {:ok, %{body: "Not found"}} = School.Bound.generate_info(nil)
   end
 
-  test "testing aginst the contents of the body of the response" do
+  test "testing against the contents of the body of the response" do
     expect(GetZipcodeInfoBehaviorMock, :generate_info, fn args ->
       assert args == 46755
 
@@ -66,5 +66,35 @@ defmodule BoundTest do
        }}
 
     assert result = School.Bound.generate_info(46755)
+  end
+
+  describe "create_teacher/6" do
+    test "creates a teacher based on params passed" do
+      expect(GetZipcodeInfoBehaviorMock, :create_teacher, fn first_name,
+                                                             last_name,
+                                                             email,
+                                                             gender,
+                                                             address,
+                                                             date_of_birth ->
+        assert first_name == "omar"
+        assert last_name == "daqah"
+        assert email == "omar@gmail.com"
+        assert gender == "male"
+        assert address == "ramallah"
+        assert date_of_birth == "1997-09-04"
+
+        {:ok, %{body: "body"}}
+      end)
+
+      assert {:ok, %{body: "body"}} =
+               School.Bound.create_teacher(
+                 "omar",
+                 "daqah",
+                 "omar@gmail.com",
+                 "male",
+                 "ramallah",
+                 "1997-09-04"
+               )
+    end
   end
 end

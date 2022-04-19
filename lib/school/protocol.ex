@@ -8,17 +8,19 @@ end
 
 defimpl School.Person, for: Student do
   def show(student) do
-    student.courses
-    |> Enum.filter(fn course -> course.semester == :first end)
-    |> length()
+    student
+    |> Map.take([:address, :gender, :date_of_birth])
+    |> Map.put(
+      :number_of_courses,
+      Enum.filter(student.courses, fn course -> course.semester == :first end) |> length()
+    )
   end
 end
 
 defimpl School.Person, for: Teacher do
   def show(teacher) do
-    teacher = Repo.preload(teacher, :courses)
-
-    teacher.courses
-    |> length()
+    teacher
+    |> Map.take([:address, :gender, :date_of_birth])
+    |> Map.put(:number_of_courses, teacher.courses |> length)
   end
 end
