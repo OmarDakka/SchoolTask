@@ -31,6 +31,8 @@ defmodule School.Courses.Course do
     field :code, :string
     field :semester, Ecto.Enum, values: [:first, :second, :third, :fourth], null: false
     field :description, :string
+    field :faculty, Ecto.Enum, values: [:history, :engineering, :art, :science, :law]
+    field :branches, :string
 
     field :metadata, PolymorphicEmbed,
       types: [
@@ -63,8 +65,17 @@ defmodule School.Courses.Course do
       end
 
     course
-    |> cast(attrs, [:course_name, :code, :semester, :description, :teacher_id])
-    |> validate_required([:course_name, :code, :teacher_id, :semester])
+    |> cast(attrs, [
+      :course_name,
+      :code,
+      :semester,
+      :description,
+      :teacher_id,
+      :faculty,
+      :branches
+    ])
+    |> validate_required([:course_name, :code, :teacher_id, :semester, :faculty])
+    |> branch_changeset()
     |> cast_polymorphic_embed(:metadata, required: true)
     |> foreign_key_constraint(:teacher_id)
     |> IO.inspect()
@@ -75,5 +86,46 @@ defmodule School.Courses.Course do
     metadata = Map.merge(metadata, %{"__type__" => semester})
 
     Map.put(attrs, "metadata", metadata)
+  end
+
+  def branch_changeset(changeset) do
+    case get_field(changeset, :faculty) do
+      :history ->
+        validate_inclusion(changeset, :branches, [nil])
+
+      :law ->
+        validate_inclusion(changeset, :branches, [nil])
+
+      :engineering ->
+        validate_inclusion(changeset, :branches, [
+          "civil",
+          "chemical",
+          "mechanical",
+          "electrical",
+          "industrial",
+          "computer"
+        ])
+        |> validate_required(:branches, message: "Please enter an engineering faculty branch")
+
+      :art ->
+        validate_inclusion(changeset, :branches, [
+          "creative arts",
+          "writing",
+          "philosophy",
+          "humanities"
+        ])
+        |> validate_required(:branches, message: "Please enter an art faculty branch")
+
+      :science ->
+        validate_inclusion(changeset, :branches, [
+          "physics",
+          "biology",
+          "chemistry",
+          "math",
+          "anatomy",
+          "statistics"
+        ])
+        |> validate_required(:branches, message: "Please enter a science faculty branch")
+    end
   end
 end
