@@ -20,6 +20,41 @@ defmodule School.Courses.Course do
             | Fourth.t()
         }
 
+  @course_fields [
+    :course_name,
+    :code,
+    :semester,
+    :description,
+    :teacher_id,
+    :faculty
+  ]
+
+  @required_fields [:course_name, :code, :teacher_id, :semester, :faculty]
+
+  @engineering_branches [
+    "civil",
+    "chemical",
+    "mechanical",
+    "electrical",
+    "industrial",
+    "computer"
+  ]
+
+  @art_branches [
+    "creative arts",
+    "writing",
+    "philosophy",
+    "humanities"
+  ]
+
+  @science_branches [
+    "physics",
+    "biology",
+    "chemistry",
+    "math",
+    "anatomy",
+    "statistics"
+  ]
   @doc """
   Schema for the courses, with the fields specified, and a many to one relationship with the teachers and many to many
   relationship with the students.
@@ -31,6 +66,8 @@ defmodule School.Courses.Course do
     field :code, :string
     field :semester, Ecto.Enum, values: [:first, :second, :third, :fourth], null: false
     field :description, :string
+    field :faculty, Ecto.Enum, values: [:history, :engineering, :art, :science, :law]
+    field :branches, :string
 
     field :metadata, PolymorphicEmbed,
       types: [
@@ -63,8 +100,9 @@ defmodule School.Courses.Course do
       end
 
     course
-    |> cast(attrs, [:course_name, :code, :semester, :description, :teacher_id])
-    |> validate_required([:course_name, :code, :teacher_id, :semester])
+    |> cast(attrs, @course_fields)
+    |> validate_required(@required_fields)
+    |> maybe_cast_branch(attrs)
     |> cast_polymorphic_embed(:metadata, required: true)
     |> foreign_key_constraint(:teacher_id)
     |> IO.inspect()
@@ -75,5 +113,30 @@ defmodule School.Courses.Course do
     metadata = Map.merge(metadata, %{"__type__" => semester})
 
     Map.put(attrs, "metadata", metadata)
+  end
+
+  def maybe_cast_branch(changeset, attrs) do
+    case get_field(changeset, :faculty) do
+      :engineering ->
+        changeset
+        |> cast(attrs, [:branches])
+        |> validate_inclusion(:branches, @engineering_branches)
+        |> validate_required(:branches, message: "Please enter an engineering faculty branch")
+
+      :art ->
+        changeset
+        |> cast(attrs, [:branches])
+        |> validate_inclusion(:branches, @art_branches)
+        |> validate_required(:branches, message: "Please enter an art faculty branch")
+
+      :science ->
+        changeset
+        |> cast(attrs, [:branches])
+        |> validate_inclusion(:branches, @science_branches)
+        |> validate_required(:branches, message: "Please enter a science faculty branch")
+
+      _ ->
+        changeset
+    end
   end
 end
