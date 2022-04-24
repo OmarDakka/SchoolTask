@@ -28,9 +28,10 @@ defmodule School.Teachers do
   Query to get one teacher from database using the teacher id.
   """
   @spec get_teacher(any) :: any
-  def get_teacher(id) do
+  def get_teacher(id, preloads \\ []) do
     Teacher
     |> Repo.get(id)
+    |> Repo.preload(preloads)
   end
 
   @doc """

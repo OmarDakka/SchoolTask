@@ -3,7 +3,8 @@ defmodule School.Students.Student do
   import Ecto.Changeset
 
   alias School.Courses.Course
-
+  @fields [:first_name, :last_name, :email, :date_of_birth, :gender, :address]
+  @required_fields [:first_name, :date_of_birth, :gender, :address]
   @doc """
   Schema for students table with the appropriate fields, and it has a many to many relationship with the courses table. joining through
   the `students_courses` table
@@ -14,6 +15,8 @@ defmodule School.Students.Student do
     field :last_name, :string
     field :email, :string
     field :date_of_birth, :date
+    field :gender, :string
+    field :address, :string
 
     many_to_many :courses, Course,
       join_through: "students_courses",
@@ -28,8 +31,8 @@ defmodule School.Students.Student do
   """
   def changeset(student, attrs) do
     student
-    |> cast(attrs, [:first_name, :last_name, :email, :date_of_birth])
-    |> validate_required([:first_name, :date_of_birth])
+    |> cast(attrs, @fields)
+    |> validate_required(@required_fields)
     |> validate_email()
   end
 
