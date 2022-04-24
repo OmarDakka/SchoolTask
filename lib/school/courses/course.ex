@@ -71,11 +71,10 @@ defmodule School.Courses.Course do
       :semester,
       :description,
       :teacher_id,
-      :faculty,
-      :branches
+      :faculty
     ])
     |> validate_required([:course_name, :code, :teacher_id, :semester, :faculty])
-    |> branch_changeset()
+    |> branch_changeset(attrs)
     |> cast_polymorphic_embed(:metadata, required: true)
     |> foreign_key_constraint(:teacher_id)
     |> IO.inspect()
@@ -88,16 +87,17 @@ defmodule School.Courses.Course do
     Map.put(attrs, "metadata", metadata)
   end
 
-  def branch_changeset(changeset) do
+  def branch_changeset(changeset, attrs) do
     case get_field(changeset, :faculty) do
       :history ->
-        validate_inclusion(changeset, :branches, [nil])
+        changeset
 
       :law ->
-        validate_inclusion(changeset, :branches, [nil])
+        changeset
 
       :engineering ->
-        validate_inclusion(changeset, :branches, [
+        cast(changeset, attrs, [:branches])
+        |> validate_inclusion(:branches, [
           "civil",
           "chemical",
           "mechanical",
@@ -108,7 +108,8 @@ defmodule School.Courses.Course do
         |> validate_required(:branches, message: "Please enter an engineering faculty branch")
 
       :art ->
-        validate_inclusion(changeset, :branches, [
+        cast(changeset, attrs, [:branches])
+        |> validate_inclusion(:branches, [
           "creative arts",
           "writing",
           "philosophy",
@@ -117,7 +118,8 @@ defmodule School.Courses.Course do
         |> validate_required(:branches, message: "Please enter an art faculty branch")
 
       :science ->
-        validate_inclusion(changeset, :branches, [
+        cast(changeset, attrs, [:branches])
+        |> validate_inclusion(:branches, [
           "physics",
           "biology",
           "chemistry",
