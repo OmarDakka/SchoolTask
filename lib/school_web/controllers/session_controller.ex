@@ -32,9 +32,6 @@ defmodule SchoolWeb.SessionController do
     refresh_token =
       Plug.Conn.fetch_cookies(conn) |> Map.from_struct() |> get_in([:cookies, "ruid"])
 
-    IO.inspect(conn)
-    IO.inspect(refresh_token)
-
     case Guardian.exchange(refresh_token, "access", "refresh") do
       {:ok, _old_stuff, {new_access_token, _new_claims}} ->
         conn
@@ -53,7 +50,6 @@ defmodule SchoolWeb.SessionController do
     conn
     |> delete_resp_cookie("ruid")
     |> put_status(200)
-    |> IO.inspect()
     |> text("Log out successfull")
   end
 end

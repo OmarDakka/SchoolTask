@@ -105,7 +105,6 @@ defmodule School.Courses.Course do
     |> maybe_cast_branch(attrs)
     |> cast_polymorphic_embed(:metadata, required: true)
     |> foreign_key_constraint(:teacher_id)
-    |> IO.inspect()
   end
 
   def add_type_to_metadata(%{"semester" => semester, "metadata" => metadata} = attrs)

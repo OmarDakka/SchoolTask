@@ -78,7 +78,6 @@ defmodule SchoolWeb.TeacherController do
   def create_teacher_and_course(conn, params) do
     case Teachers.create_teacher_and_course(params) do
       {:ok, %{new_course: course, new_teacher: teacher}} ->
-        IO.inspect(course)
         render(conn, "create_teacher_and_course.json", result: [course, teacher])
 
       {:error, :new_teacher, error, %{}} ->
